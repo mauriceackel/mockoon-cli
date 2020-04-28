@@ -5,8 +5,12 @@
   "main": "Main.js",
   "scripts": {
     "build": "tsc",
-    "start": "node ./bin/Main.js",
-    "debug": "node --inspect ./bin/Main.js"
+    "start": "npm run build & node ./bin/Main.js",
+    "debug": "npm run build & node --inspect-brk ./bin/Main.js",
+    "package": "npm run package-mac & npm run package-win & npm run package-lin",
+    "package-mac": "npm run build & npx pkg --target node13-mac-x64 ./bin/Main.js -o ./packages/mac/mockoon-cli",
+    "package-win": "npm run build & npx pkg --target node13-win-x64 ./bin/Main.js -o ./packages/win/mockoon-cli.exe",
+    "package-lin": "npm run build & npx pkg --target node13-linux-x64 ./bin/Main.js -o ./packages/lin/mockoon-cli"
   },
   "author": "Maurice Ackel",
   "license": "MIT",
@@ -27,9 +31,11 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.3",
-    "@types/object-path": "^0.11.0",
     "@types/lodash": "^4.14.149",
     "@types/mime-types": "^2.1.0",
-    "@types/uuid": "^7.0.0"
+    "@types/object-path": "^0.11.0",
+    "@types/uuid": "^7.0.0",
+    "pkg": "^4.4.8",
+    "typescript": "^3.8.3"
   }
 }
