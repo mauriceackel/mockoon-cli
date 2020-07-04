@@ -1,3 +1,4 @@
+# If you've built the base container yourself, change this to the tag of it.
 FROM andyta/mockoon-cli:latest
 
 # Ensure that export.json exists in docker folder beforehand!
