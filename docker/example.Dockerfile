@@ -1,4 +1,4 @@
-FROM mockoon-cli:latest
+FROM andyta/mockoon-cli:latest
 
 # Ensure that export.json exists in docker folder beforehand!
 COPY ./docker/export.json /usr/local/bin/export.json
