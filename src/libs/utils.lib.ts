@@ -16,3 +16,10 @@ export const GetRouteResponseContentType = (environment: Environment, routeRespo
 
   return '';
 };
+
+export const IsEmpty = (obj) => {
+  return (
+    [Object, Array].includes((obj || {}).constructor) &&
+    !Object.entries(obj || {}).length
+  );
+};

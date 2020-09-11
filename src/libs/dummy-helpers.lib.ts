@@ -1,9 +1,9 @@
 import { format as dateFormat } from 'date-fns';
+import * as faker from 'faker';
 const DummyJSON = require('dummy-json');
 import random from 'lodash/random';
 import * as objectPath from 'object-path';
 import * as queryString from 'querystring';
-
 /**
  * Prevents insertion of Dummy-JSON own object (last argument) when no default value is provided:
  *
@@ -16,6 +16,51 @@ import * as queryString from 'querystring';
  */
 export const DummyJSONHelpers = (request: any) => {
   return {
+    // faker wrapper
+    faker: function (...args) {
+      let fakerName: string;
+
+      if (args.length === 1) {
+        fakerName = '';
+      } else {
+        fakerName = args[0];
+      }
+
+      const [fakerPrimaryMethod, fakerSecondaryMethod] = fakerName.split('.');
+      let errorMessage = `${fakerName} is not a valid Faker method`;
+      // check faker helper name pattern
+      if (
+        !fakerName ||
+        !fakerName.match(/^[a-z]+\.[a-z]+$/i) ||
+        !fakerPrimaryMethod ||
+        !fakerSecondaryMethod ||
+        !faker[fakerPrimaryMethod] ||
+        !faker[fakerPrimaryMethod][fakerSecondaryMethod]
+      ) {
+        if (!fakerName) {
+          errorMessage = 'Faker method name is missing';
+        }
+
+        throw new Error(
+          `${errorMessage} (valid: "address.zipCode", "date.past", etc)`
+        );
+      }
+
+      const fakerFunction = faker[fakerPrimaryMethod][fakerSecondaryMethod];
+      const fakerArgs = args.slice(1, args.length - 1);
+
+      let fakedContent = fakerFunction(...fakerArgs);
+
+      // do not stringify Date coming from Faker.js
+      if (
+        (Array.isArray(fakedContent) || typeof fakedContent === 'object') &&
+        !(fakedContent instanceof Date)
+      ) {
+        fakedContent = JSON.stringify(fakedContent);
+      }
+
+      return fakedContent;
+    },
     // get json property from body
     body: function (path: string, defaultValue: string) {
       const requestContentType: string = request.header('Content-Type');

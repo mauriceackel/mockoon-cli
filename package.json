@@ -35,7 +35,9 @@
     "@types/mime-types": "^2.1.0",
     "@types/object-path": "^0.11.0",
     "@types/uuid": "^7.0.0",
+    "@types/faker": "4.1.11",
     "pkg": "^4.4.8",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "faker": "github:Marak/faker.js"
   }
 }
