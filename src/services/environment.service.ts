@@ -1,4 +1,4 @@
-import {Environment, EnvironmentStatusProperties} from '../types/environment.type';
+import { Environment } from '../types/environment.type';
 
 export class EnvironmentService {
 

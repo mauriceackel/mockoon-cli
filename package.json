@@ -5,24 +5,28 @@
   "main": "Main.js",
   "scripts": {
     "build": "tsc",
-    "start": "npm run build & node ./bin/Main.js",
-    "debug": "npm run build & node --inspect-brk ./bin/Main.js",
-    "package": "npm run package-mac & npm run package-win & npm run package-lin",
-    "package-mac": "npm run build & npx pkg --target node13-mac-x64 ./bin/Main.js -o ./packages/mac/mockoon-cli",
-    "package-win": "npm run build & npx pkg --target node13-win-x64 ./bin/Main.js -o ./packages/win/mockoon-cli.exe",
-    "package-lin": "npm run build & npx pkg --target node13-linux-x64 ./bin/Main.js -o ./packages/lin/mockoon-cli"
+    "start": "npm run build && node ./bin/Main.js",
+    "debug": "npm run build && node --inspect-brk ./bin/Main.js",
+    "package": "npm run package-mac && npm run package-win && npm run package-lin",
+    "package-mac": "npm run build && npx pkg --target node13-mac-x64 ./bin/Main.js -o ./packages/mac/mockoon-cli",
+    "package-win": "npm run build && npx pkg --target node13-win-x64 ./bin/Main.js -o ./packages/win/mockoon-cli.exe",
+    "package-lin": "npm run build && npx pkg --target node13-linux-x64 ./bin/Main.js -o ./packages/lin/mockoon-cli"
   },
   "author": "Maurice Ackel",
   "license": "MIT",
   "dependencies": {
+    "btoa": "^1.2.1",
+    "cookie-parser": "1.4.5",
     "date-fns": "^2.10.0",
     "dummy-json": "git+https://git@github.com/Maurice22/dummy-json.git",
     "express": "4.17.1",
+    "faker": "^5.1.0",
     "http-proxy-middleware": "0.20.0",
     "killable": "1.0.1",
     "lodash": "^4.17.19",
     "mime-types": "2.1.24",
     "object-path": "0.11.4",
+    "qs": "6.9.3",
     "querystring": "^0.2.0",
     "request": "2.88.0",
     "rxjs": "^6.5.4",
@@ -35,6 +39,7 @@
     "@types/mime-types": "^2.1.0",
     "@types/object-path": "^0.11.0",
     "@types/uuid": "^7.0.0",
+    "@types/cookie-parser": "1.4.2",
     "pkg": "^4.4.8",
     "typescript": "^3.8.3"
   }

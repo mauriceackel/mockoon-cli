@@ -1,7 +1,11 @@
 import { Request } from 'express';
-import * as objectPath from 'object-path';
-import * as queryString from 'querystring';
-import { ResponseRule, ResponseRuleTargets, RouteResponse } from '../types/route.type';
+import { get as objectPathGet } from 'object-path';
+import { parse as qsParse, ParsedUrlQuery } from 'querystring';
+import {
+  ResponseRule,
+  ResponseRuleTargets,
+  RouteResponse
+} from '../types/route.type';
 
 /**
  * Interpretor for the route response rules.
@@ -9,7 +13,7 @@ import { ResponseRule, ResponseRuleTargets, RouteResponse } from '../types/route
  * Get the first route response for which at least one rule is fulfilled.
  */
 export class ResponseRulesInterpreter {
-  private targets!: { [key in Exclude<ResponseRuleTargets, 'header'>]: any };
+  private targets: { [key in Exclude<ResponseRuleTargets, 'header'>]: any };
 
   constructor(
     private routeResponses: RouteResponse[],
@@ -23,11 +27,17 @@ export class ResponseRulesInterpreter {
    * If no rule has been fulfilled get the first route response.
    */
   public chooseResponse(): RouteResponse {
-    return (
-      this.routeResponses.find(routeResponse => {
-        return !!routeResponse.rules.find(this.isValidRule);
-      }) || this.routeResponses[0]
+    let response = this.routeResponses.find((routeResponse) =>
+      routeResponse.rulesOperator === 'AND'
+        ? !!routeResponse.rules.every(this.isValidRule)
+        : !!routeResponse.rules.find(this.isValidRule)
     );
+
+    if (response === undefined) {
+      response = this.routeResponses[0];
+    }
+
+    return response;
   }
 
   /**
@@ -43,7 +53,11 @@ export class ResponseRulesInterpreter {
     if (rule.target === 'header') {
       value = this.request.header(rule.modifier);
     } else {
-      value = objectPath.ensureExists(this.targets[rule.target], rule.modifier);
+      value = objectPathGet(this.targets[rule.target], rule.modifier);
+    }
+
+    if (value === undefined) {
+      return false;
     }
 
     let regex: RegExp;
@@ -51,7 +65,7 @@ export class ResponseRulesInterpreter {
       regex = new RegExp(rule.value);
 
       return Array.isArray(value)
-        ? value.some(arrayValue => regex.test(arrayValue))
+        ? value.some((arrayValue) => regex.test(arrayValue))
         : regex.test(value);
     }
 
@@ -59,7 +73,7 @@ export class ResponseRulesInterpreter {
       return value.includes(rule.value);
     }
 
-    return value === rule.value;
+    return value.toString() === rule.value.toString();
   };
 
   /**
@@ -67,12 +81,12 @@ export class ResponseRulesInterpreter {
    */
   private extractTargets() {
     const requestContentType = this.request.header('Content-Type');
-    let body: queryString.ParsedUrlQuery | JSON = {};
+    let body: ParsedUrlQuery | JSON = {};
 
     try {
-      if (requestContentType!.includes('application/x-www-form-urlencoded')) {
-        body = queryString.parse(this.request.body);
-      } else if (requestContentType!.includes('application/json')) {
+      if (requestContentType.includes('application/x-www-form-urlencoded')) {
+        body = qsParse(this.request.body);
+      } else if (requestContentType.includes('application/json')) {
         body = JSON.parse(this.request.body);
       }
     } catch (e) {

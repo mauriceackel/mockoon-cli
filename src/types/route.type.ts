@@ -1,4 +1,3 @@
-
 export const methods = [
   'get',
   'post',
@@ -50,6 +49,7 @@ export const statusCodes = [
   { code: 415, text: 'Unsupported Media Type' },
   { code: 416, text: 'Range Not Satisfiable' },
   { code: 417, text: 'Expectation Failed' },
+  { code: 418, text: "I'm a teapot" },
   { code: 421, text: 'Misdirected Request' },
   { code: 422, text: 'Unprocessable Entity' },
   { code: 423, text: 'Locked' },
@@ -232,16 +232,20 @@ export const headerValues = [
   'UTF-16'
 ];
 
+export type LogicalOperators = 'AND' | 'OR';
+
 export type RouteResponse = {
   uuid: string;
   rules: ResponseRule[];
-  statusCode: string;
+  rulesOperator: LogicalOperators;
+  statusCode: number;
   label: string;
   headers: Header[];
   body?: string;
   latency: number;
   filePath: string;
   sendFileAsBody: boolean;
+  disableTemplating: boolean;
 };
 
 export type ResponseRule = {
@@ -262,16 +266,25 @@ export type Route = {
   enabled: boolean;
 };
 
-export type Header = { key: string, value: string };
+export type Header = { key: string; value: string };
 
 export const CORSHeaders: Header[] = [
   { key: 'Access-Control-Allow-Origin', value: '*' },
-  { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS' },
-  { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With' }
+  {
+    key: 'Access-Control-Allow-Methods',
+    value: 'GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS'
+  },
+  {
+    key: 'Access-Control-Allow-Headers',
+    value:
+      'Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With'
+  }
 ];
 
 export type RouteProperties = { [T in keyof Route]?: Route[T] };
 
-export type RouteResponseProperties = { [T in keyof RouteResponse]?: RouteResponse[T] };
+export type RouteResponseProperties = {
+  [T in keyof RouteResponse]?: RouteResponse[T];
+};
 
 export type Method = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'head';
