@@ -246,6 +246,52 @@ const TemplateParserHelpers = function (request: Request) {
         }
       );
     },
+    // provide shifted date with format
+    dateShift: function (format, shiftDays, shiftMonths, shiftYears) {
+      let date = new Date();
+
+      if (typeof shiftDays === 'number') {
+        date.setDate(date.getDate() + shiftDays);
+      }
+      if (typeof shiftMonths === 'number') {
+        date.setMonth(date.getMonth() + shiftMonths);
+      }
+      if (typeof shiftYears === 'number') {
+        date.setFullYear(date.getFullYear() + shiftYears);
+      }
+
+      return dateFormat(
+          date,
+          typeof format === 'string' ? format : "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
+          {
+            useAdditionalWeekYearTokens: true,
+            useAdditionalDayOfYearTokens: true
+          }
+      );
+    },
+    // provide shifted time with format
+    timeShift: function (format, shiftHours, shiftMinutes, shiftSeconds) {
+      let date = new Date();
+
+      if (typeof shiftHours === 'number') {
+        date.setHours(date.getHours() + shiftHours);
+      }
+      if (typeof shiftMinutes === 'number') {
+        date.setMinutes(date.getMinutes() + shiftMinutes);
+      }
+      if (typeof shiftSeconds === 'number') {
+        date.setSeconds(date.getSeconds() + shiftSeconds);
+      }
+
+      return dateFormat(
+          date,
+          typeof format === 'string' ? format : "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
+          {
+            useAdditionalWeekYearTokens: true,
+            useAdditionalDayOfYearTokens: true
+          }
+      );
+    },
     // converts the input to a base64 string
     base64: function (...args) {
       const hbsOptions: HelperOptions & hbs.AST.Node = args[args.length - 1];
